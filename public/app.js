@@ -2,8 +2,11 @@ import { REGULAR_PRICE, MAX_QUANTITY, priceFor, lineKey, money, restoreCart } fr
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
-const clubEdition = document.body.dataset.angle === 'frat';
-const imageBase = clubEdition ? '/images/frat' : '/images';
+const blueClubEdition = document.body.dataset.angle === 'frat-blue';
+const clubEdition = blueClubEdition || document.body.dataset.angle === 'frat';
+const imageBase = blueClubEdition ? '/images/frat-blue' : clubEdition ? '/images/frat' : '/images';
+const clubSurface = blueClubEdition ? 'blue' : 'maroon';
+const clubTowel = blueClubEdition ? 'white' : 'cream';
 const packName = pack => clubEdition ? (pack === 2 ? 'The roommate duo' : 'The solo') : (pack === 2 ? 'The shelf duo' : 'The everyday');
 const storageKey = 'puraclear-demo-bag-v1';
 const form = $('#product-form');
@@ -153,9 +156,9 @@ window.addEventListener('storage', event => {
 });
 
 const images = clubEdition ? [
-  ['hero', 'PuraClear jar on a maroon locker-room bench with a cream towel', 'ONE JAR. GET YOUR SHIT TOGETHER.'],
-  ['texture', 'A white moisturizer swipe on a maroon surface', 'THE CREAM. NO LECTURE.'],
-  ['open', 'Open PuraClear jar and cosmetic spatula on a maroon bench', 'GOOD STUFF INSIDE.'],
+  ['hero', `PuraClear jar on a ${clubSurface} locker-room bench with a ${clubTowel} towel`, 'ONE JAR. GET YOUR SHIT TOGETHER.'],
+  ['texture', `A white moisturizer swipe on a ${clubSurface} surface`, 'THE CREAM. NO LECTURE.'],
+  ['open', `Open PuraClear jar and cosmetic spatula on a ${clubSurface} bench`, 'GOOD STUFF INSIDE.'],
   ['hand', 'An adult hand holding the 118 mL PuraClear jar for scale', 'BIG ENOUGH FOR THE PLAYBOOK.'],
   ['ritual', 'An adult man applying moisturizer at a bathroom mirror', 'THE PRE-GAME BEFORE THE PRE-GAME.'],
   ['party', 'Six adult friends singing and laughing together in a crowded pub booth', 'ONE MORE SONG. FAMOUS LAST WORDS.'],

@@ -24,3 +24,5 @@ Good Face Club adds self-hosted Alfa Slab One and Barlow Condensed fonts, with t
 The public preview is marked noindex and nofollow until the real commerce integration is ready. The deployment contains no competitor HTML or private source-store assets.
 
 Good Face Club uses the “Good face. Bad influence.” identity and a blunt, adult voice. Its seven-image gallery includes two candid bar scenes, also featured in an after-hours campaign section. The source repository is private: https://github.com/Versaunt/puraclear-skincare.
+
+The blue/gray/white color variant is at `/frat-blue` (also `/frat-blue/`). Its HTML and CSS are snapshots of `/frat` with only palette, image URLs, image descriptions, and route metadata changed. It shares `/frat/frat.js` and all commerce/Pixel code. All eleven photographs have separate blue editions in `public/images/frat-blue/`; their originals and edit prompts are in `../frat-blue-brand/`. The existing maroon page and original homepage remain separate. These are two directly addressable test pages; there is no automatic traffic allocation.

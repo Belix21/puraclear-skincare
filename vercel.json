@@ -6,7 +6,9 @@
   "rewrites": [
     { "source": "/products/puraclear-acne-moisturizer", "destination": "/index.html" },
     { "source": "/frat", "destination": "/frat/index.html" },
-    { "source": "/frat/", "destination": "/frat/index.html" }
+    { "source": "/frat/", "destination": "/frat/index.html" },
+    { "source": "/frat-blue", "destination": "/frat-blue/index.html" },
+    { "source": "/frat-blue/", "destination": "/frat-blue/index.html" }
   ],
   "headers": [
     { "source": "/(.*)", "headers": [
