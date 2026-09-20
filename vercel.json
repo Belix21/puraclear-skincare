@@ -3,7 +3,11 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": null,
-  "rewrites": [{ "source": "/products/puraclear-acne-moisturizer", "destination": "/index.html" }],
+  "rewrites": [
+    { "source": "/products/puraclear-acne-moisturizer", "destination": "/index.html" },
+    { "source": "/frat", "destination": "/frat/index.html" },
+    { "source": "/frat/", "destination": "/frat/index.html" }
+  ],
   "headers": [
     { "source": "/(.*)", "headers": [
       { "key": "X-Robots-Tag", "value": "noindex, nofollow" },

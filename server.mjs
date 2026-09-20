@@ -7,7 +7,8 @@ const mime = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript
 createServer(async (req, res) => {
   try {
     const pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
-    const file = resolve(root, '.' + (pathname === '/' || pathname === '/products/puraclear-acne-moisturizer' ? '/index.html' : pathname));
+    const pages = { '/': '/index.html', '/products/puraclear-acne-moisturizer': '/index.html', '/frat': '/frat/index.html', '/frat/': '/frat/index.html' };
+    const file = resolve(root, '.' + (pages[pathname] || pathname));
     if (!file.startsWith(root + sep) || !(await stat(file)).isFile()) throw new Error('Not found');
     res.writeHead(200, { 'Content-Type': (mime[extname(file)] || 'application/octet-stream'), 'Cache-Control': 'no-store' });
     res.end(await readFile(file));

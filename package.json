@@ -6,6 +6,6 @@
   "scripts": {
     "dev": "node server.mjs",
     "build": "node build.mjs",
-    "check": "node --check public/app.js && node --check public/pixel.js"
+    "check": "node --check public/app.js && node --check public/commerce.js && node --check public/pixel.js && node --check public/frat/frat.js"
   }
 }

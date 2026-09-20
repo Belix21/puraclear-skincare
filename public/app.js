@@ -2,6 +2,9 @@ import { REGULAR_PRICE, MAX_QUANTITY, priceFor, lineKey, money, restoreCart } fr
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
+const clubEdition = document.body.dataset.angle === 'frat';
+const imageBase = clubEdition ? '/images/frat' : '/images';
+const packName = pack => clubEdition ? (pack === 2 ? 'The roommate duo' : 'The solo') : (pack === 2 ? 'The shelf duo' : 'The everyday');
 const storageKey = 'puraclear-demo-bag-v1';
 const form = $('#product-form');
 let cart = [];
@@ -68,17 +71,17 @@ function renderCart() {
   $('#cart-summary').hidden = cart.length === 0;
   if (!cart.length) {
     const empty = element('div', undefined, 'empty-cart');
-    const photo = element('img'); photo.src = '/images/hero-thumb.webp'; photo.alt = '';
-    empty.append(photo, element('h3', 'A little space for you.'), element('p', 'Find your everyday. Add PuraClear to your demo bag.'));
+    const photo = element('img'); photo.src = `${imageBase}/hero-thumb.webp`; photo.alt = '';
+    empty.append(photo, element('h3', clubEdition ? 'No face gear. Yet.' : 'A little space for you.'), element('p', clubEdition ? 'Big plans start with a little maintenance.' : 'Find your everyday. Add PuraClear to your demo bag.'));
     container.append(empty);
     return;
   }
   cart.forEach(line => {
     const key = lineKey(line);
     const row = element('article', undefined, 'cart-item');
-    const photo = element('img'); photo.src = `/images/${line.pack === 2 ? 'duo' : 'hero'}-thumb.webp`; photo.alt = `${line.pack} PuraClear ${line.pack === 1 ? 'jar' : 'jars'}`;
+    const photo = element('img'); photo.src = `${imageBase}/${line.pack === 2 ? 'duo' : 'hero'}-thumb.webp`; photo.alt = `${line.pack} PuraClear ${line.pack === 1 ? 'jar' : 'jars'}`;
     const content = element('div');
-    content.append(element('h3', line.pack === 2 ? 'The shelf duo' : 'The everyday'));
+    content.append(element('h3', packName(line.pack)));
     content.append(element('p', `${line.pack} ${line.pack === 1 ? 'jar' : 'jars'} · 118 mL each`));
     content.append(element('p', line.plan === 'subscribe' ? `Subscription · Every ${line.cadence} days` : 'One-time purchase'));
     content.append(element('p', `${money(priceFor(line) * line.quantity)}${line.plan === 'subscribe' ? ' per delivery' : ''}`, 'line-price'));
@@ -125,13 +128,16 @@ function addToBag() {
   }
   if (existing) existing.quantity += 1;
   else cart.push({ ...selected, quantity: 1 });
-  saveCart(); openDialog('bag-dialog'); announce(`${selected.pack === 2 ? 'The shelf duo' : 'The everyday'} added to your demo bag.`);
+  saveCart(); openDialog('bag-dialog'); announce(`${packName(selected.pack)} added to your demo bag.`);
 }
 form.addEventListener('change', updateOffer);
 form.addEventListener('submit', event => { event.preventDefault(); addToBag(); });
 $('#sticky-add').addEventListener('click', addToBag);
 $$('[data-subscribe]').forEach(link => link.addEventListener('click', () => {
   form.elements.plan.value = 'subscribe'; updateOffer();
+}));
+$$('[data-duo]').forEach(link => link.addEventListener('click', () => {
+  form.elements.pack.value = '2'; form.elements.plan.value = 'once'; updateOffer();
 }));
 $('#preview-order').addEventListener('click', () => {
   $('#order-preview').hidden = false;
@@ -146,7 +152,13 @@ window.addEventListener('storage', event => {
   if (event.key === storageKey || event.key === null) { cart = restoreCart(event.key === null ? null : event.newValue); renderCart(); }
 });
 
-const images = [
+const images = clubEdition ? [
+  ['hero', 'PuraClear jar on a maroon locker-room bench with a cream towel', 'DAILY MAINTENANCE. BIG PLANS.'],
+  ['texture', 'A white moisturizer swipe on a maroon surface', 'THE CREAM. NO LECTURE.'],
+  ['open', 'Open PuraClear jar and cosmetic spatula on a maroon bench', 'GOOD STUFF INSIDE.'],
+  ['hand', 'An adult hand holding the 118 mL PuraClear jar for scale', 'BIG ENOUGH FOR THE PLAYBOOK.'],
+  ['ritual', 'An adult man applying moisturizer at a bathroom mirror', 'THE PRE-GAME BEFORE THE PRE-GAME.']
+] : [
   ['hero', 'PuraClear Acne Moisturizer jar on a blue ledge in morning sunlight', 'YOUR EVERYDAY, RECONSIDERED.'],
   ['texture', 'A tactile white cream swipe on a blue surface', 'A LITTLE CLOSER TO THE TEXTURE.'],
   ['open', 'Open PuraClear jar showing the cream, with its lid and a cosmetic spatula', 'A CLOSER LOOK AT YOUR EVERYDAY.'],
@@ -157,8 +169,8 @@ let imageIndex = 0;
 function showImage(index) {
   imageIndex = (index + images.length) % images.length;
   const [name, alt, caption] = images[imageIndex];
-  $('#gallery-main').src = `/images/${name}.webp`; $('#gallery-main').alt = alt;
-  $('#lightbox-image').src = `/images/${name}.webp`; $('#lightbox-image').alt = alt;
+  $('#gallery-main').src = `${imageBase}/${name}.webp`; $('#gallery-main').alt = alt;
+  $('#lightbox-image').src = `${imageBase}/${name}.webp`; $('#lightbox-image').alt = alt;
   $('#image-caption').textContent = caption;
   $('#gallery-stage').classList.toggle('alternate', imageIndex !== 0);
   $('#lightbox-count').textContent = `${imageIndex + 1} / ${images.length}`;
