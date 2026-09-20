@@ -23,9 +23,9 @@ reducedMotion.addEventListener('change', updateRibbon);
 updateRibbon();
 
 const moves = {
-  career: { number: '01', headline: 'GOOD HANDSHAKE. BETTER PREP.', copy: 'Research the company. Charge your phone. Do your usual skincare routine. Arrive like you meant to be there.', aside: 'The GPA question is still your problem.' },
-  night: { number: '02', headline: 'CLEAN SHIRT. CLEAR PLANS.', copy: 'Pick the spot. Text the group. Stick with your usual skincare routine before you head out. Your face is part of getting ready.', aside: '“You up?” is not a skincare routine.' },
-  quiet: { number: '03', headline: 'NO PLANS. STILL YOUR FACE.', copy: 'Taking care of yourself counts on the nights nobody sees it. Keep your routine. Keep the sweatpants. Excellent calendar management.', aside: 'You do not need a guest list to take care of yourself.' }
+  career: { number: '01', headline: 'FIX YOUR TIE. SHOW UP READY.', copy: 'Know the company. Bring your resume. Do your skincare. Act like you want the job.', aside: '“My dad knows a guy” is not a plan.' },
+  night: { number: '02', headline: 'GOOD SHIRT. BETTER GAME PLAN.', copy: 'Shower. Clean shirt. Your usual skincare. Text the boys. Try saying something better than “you come here often?”', aside: 'Your face is part of the outfit.' },
+  quiet: { number: '03', headline: 'NO PLANS. NO EXCUSE.', copy: 'Sweatpants. Takeout. Three hours of absolutely nothing. Still your face. Still worth taking care of.', aside: 'Basic hygiene doesn’t need an audience.' }
 };
 let moveAnimation;
 $$('[data-move]').forEach(button => button.addEventListener('click', event => {
@@ -47,7 +47,7 @@ $$('[data-move]').forEach(button => button.addEventListener('click', event => {
 }));
 
 const checks = $$('input[name="routine"]');
-const verdicts = ['YOUR FACE WOULD LIKE A WORD.', 'CLEAN START. STRONG OPENING.', 'LOOK AT YOU, HAVING A ROUTINE.', 'HOUSE RULES: UNDERSTOOD.'];
+const verdicts = ['YOUR SINK IS CALLING.', 'LOOK AT YOU. BASIC HYGIENE.', 'THAT’S TWO. STAY WITH US.', 'CONGRATS. YOU HAVE A ROUTINE.'];
 function updateRoutine() {
   const checked = checks.filter(input => input.checked).length;
   $('#routine-progress').style.transform = `scaleX(${checked / checks.length})`;

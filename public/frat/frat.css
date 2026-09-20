@@ -57,6 +57,8 @@
 .frat-page .product { grid-template-columns: 54% 46%; max-width: 1800px; }
 .frat-page .gallery { padding: 20px 0 20px 20px; }
 .frat-page .gallery-stage { aspect-ratio: 1; background: var(--ink); border-radius: 0; }
+.frat-page .gallery-stage.lifestyle .gallery-main { object-fit: contain; }
+.frat-page .gallery-thumbnails { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
 .frat-page .hero-heading { inset: 28px 28px auto; color: var(--paper); z-index: 2; }
 .frat-page .hero-heading .eyebrow { font-size: 12px; display: block; margin-bottom: 17px; }
 .frat-page .hero-heading h1 { font-size: clamp(41px, 4.35vw, 78px); line-height: 1.07; letter-spacing: -.025em; }
@@ -109,6 +111,15 @@
 .club-ribbon.paused .ribbon-track { animation-play-state: paused; }
 #ribbon-toggle { width: 54px; height: 54px; border-left: 1px solid #fff6e355; color: var(--paper); font-size: 18px; flex-shrink: 0; }
 .club-section { padding: clamp(65px, 7.4vw, 128px) var(--gutter); }
+.after-hours { display: grid; grid-template-columns: 1.3fr 1fr; background: var(--gold); }
+.after-hours-photo { position: relative; min-width: 0; }
+.after-hours-photo img { width: 100%; height: 100%; object-fit: cover; }
+.after-hours-photo > span { position: absolute; left: 22px; bottom: 24px; padding: 9px 12px; background: var(--paper); font: 800 13px/1.2 var(--condensed); transform: rotate(-2deg); }
+.after-hours-copy { padding: clamp(38px, 5vw, 80px); align-self: center; }
+.after-hours-copy h2 { font-size: clamp(34px, 4vw, 68px); margin: 22px 0 28px; }
+.after-hours-copy h2 > span { color: var(--deep); }
+.after-hours-copy p { max-width: 340px; font-size: 15px; line-height: 1.65; margin-bottom: 18px; color: var(--deep); }
+.after-hours-copy .text-link { margin-top: 13px; }
 .club-heading { display: grid; grid-template-columns: 1.5fr .8fr; gap: 22px 70px; align-items: end; }
 .club-heading > .eyebrow { grid-column: 1 / -1; }
 .club-heading h2 { font-size: clamp(39px, 4.5vw, 76px); }
@@ -291,7 +302,7 @@
   .frat-page .product-eyebrow .eyebrow { font-size: 9px; }
   .frat-page .buy-panel h2 { font-size: 32px; }
   .frat-page .hero-heading { inset: 24px 23px auto; }
-  .frat-page .hero-heading h1 { font-size: 43px; }
+  .frat-page .hero-heading h1 { font-size: clamp(33px, 4.65vw, 43px); }
   .frat-page .hero-heading .eyebrow { font-size: 10px; margin-bottom: 15px; }
   .frat-page .product-description { font-size: 13px; }
   .frat-page .product-benefits { font-size: 10px; gap: 10px; margin: 18px 0; }
@@ -339,6 +350,8 @@
   .frat-page .gallery-bottom { inset: auto 15px 14px 17px; }
   .frat-page .gallery-bottom > span { font-size: 9px; padding: 6px 7px; }
   .frat-page .thumbnail img { height: clamp(53px, 14vw, 83px); }
+  .frat-page .gallery-thumbnails { display: flex; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin; scrollbar-color: var(--ink) transparent; }
+  .frat-page .thumbnail { flex: 0 0 calc((100% - 32px) / 5); min-width: 0; }
   .frat-page .thumbnail span { font-size: 9px; margin-top: 4px; }
   .frat-page .buy-panel { padding: 32px 24px; max-width: 650px; }
   .frat-page .product-eyebrow .eyebrow { font-size: 10px; }
@@ -354,6 +367,12 @@
   .buy-punchline { font-size: 11px; }
   .club-ribbon { min-height: 57px; }.ribbon-track > span { font-size: 22px; }.ribbon-track b { margin-inline: 22px; }
   .club-section { padding: 65px 24px; }
+  .after-hours { grid-template-columns: 1fr; }
+  .after-hours-photo img { height: auto; aspect-ratio: 1.5; }
+  .after-hours-photo > span { left: 16px; bottom: 16px; font-size: 10px; }
+  .after-hours-copy { padding: 48px 24px 54px; }
+  .after-hours-copy h2 { font-size: clamp(36px, 10vw, 60px); margin-top: 18px; }
+  .after-hours-copy h2 > span { display: block; }
   .club-heading { grid-template-columns: 1fr; gap: 19px; }
   .club-heading h2 { font-size: clamp(31px, 7.9vw, 50px); }
   .club-heading > p { justify-self: start; font-size: 14px; max-width: 420px; }

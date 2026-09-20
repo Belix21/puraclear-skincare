@@ -153,11 +153,13 @@ window.addEventListener('storage', event => {
 });
 
 const images = clubEdition ? [
-  ['hero', 'PuraClear jar on a maroon locker-room bench with a cream towel', 'DAILY MAINTENANCE. BIG PLANS.'],
+  ['hero', 'PuraClear jar on a maroon locker-room bench with a cream towel', 'ONE JAR. GET YOUR SHIT TOGETHER.'],
   ['texture', 'A white moisturizer swipe on a maroon surface', 'THE CREAM. NO LECTURE.'],
   ['open', 'Open PuraClear jar and cosmetic spatula on a maroon bench', 'GOOD STUFF INSIDE.'],
   ['hand', 'An adult hand holding the 118 mL PuraClear jar for scale', 'BIG ENOUGH FOR THE PLAYBOOK.'],
-  ['ritual', 'An adult man applying moisturizer at a bathroom mirror', 'THE PRE-GAME BEFORE THE PRE-GAME.']
+  ['ritual', 'An adult man applying moisturizer at a bathroom mirror', 'THE PRE-GAME BEFORE THE PRE-GAME.'],
+  ['party', 'Six adult friends singing and laughing together in a crowded pub booth', 'ONE MORE SONG. FAMOUS LAST WORDS.'],
+  ['after-hours', 'Adult friends carrying their tipsy buddy through the bar doorway', 'THE BOYS HAVE YOUR BACK.']
 ] : [
   ['hero', 'PuraClear Acne Moisturizer jar on a blue ledge in morning sunlight', 'YOUR EVERYDAY, RECONSIDERED.'],
   ['texture', 'A tactile white cream swipe on a blue surface', 'A LITTLE CLOSER TO THE TEXTURE.'],
@@ -173,6 +175,7 @@ function showImage(index) {
   $('#lightbox-image').src = `${imageBase}/${name}.webp`; $('#lightbox-image').alt = alt;
   $('#image-caption').textContent = caption;
   $('#gallery-stage').classList.toggle('alternate', imageIndex !== 0);
+  $('#gallery-stage').classList.toggle('lifestyle', clubEdition && imageIndex >= 5);
   $('#lightbox-count').textContent = `${imageIndex + 1} / ${images.length}`;
   $$('[data-image]').forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.image) === imageIndex)));
 }

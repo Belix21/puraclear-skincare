@@ -22,3 +22,5 @@ Design assets, research rationale, source-generation directions, and visual refe
 Good Face Club adds self-hosted Alfa Slab One and Barlow Condensed fonts, with their OFL licenses in `public/fonts/`. The angle's editable PNGs, generation prompts, visual reference, and browser captures are in `../frat-brand/`.
 
 The public preview is marked noindex and nofollow until the real commerce integration is ready. The deployment contains no competitor HTML or private source-store assets.
+
+Good Face Club uses the “Good face. Bad influence.” identity and a blunt, adult voice. Its seven-image gallery includes two candid bar scenes, also featured in an after-hours campaign section. The source repository is private: https://github.com/Versaunt/puraclear-skincare.
