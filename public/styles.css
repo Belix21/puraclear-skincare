@@ -230,10 +230,10 @@ dialog[open] { animation: settle .25s ease-out; }
 
 /* Give the header mark room to stand out without extending into the hero. */
 .header { min-height: 104px; }
-.header > .wordmark .header-logo { width: 210px; height: 84px; }
+.header > .wordmark .header-logo, .menu-dialog .header-logo { width: 210px; height: 84px; }
 @media(max-width: 1100px) {
   .header { min-height: 88px; }
-  .header > .wordmark .header-logo { width: 180px; height: 70px; }
+  .header > .wordmark .header-logo, .menu-dialog .header-logo { width: 180px; height: 70px; }
   .header .nav-left, .header .nav-right > a { display: none; }
   .header .nav-right { margin-left: auto; }
   .menu-trigger { display: block; position: absolute; left: 8px; }
