@@ -16,7 +16,7 @@ function addMobileMenuLink() {
   if (!menu || !philosophy || menu.querySelector('a[href="#ambassador"]')) return;
   const link = document.createElement('a');
   link.href = '#ambassador';
-  link.textContent = 'Ambassador Program ↗';
+  link.textContent = 'Ambassador Program';
   philosophy.insertAdjacentElement('afterend', link);
   link.addEventListener('click', () => qs('#menu-dialog')?.close());
 }
