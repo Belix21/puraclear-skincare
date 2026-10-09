@@ -35,8 +35,8 @@ function addFooterLink() {
 
 function buildSection() {
   if (qs('#ambassador')) return;
-  const faq = qs('#faq');
-  if (!faq) return;
+  const formula = qs('#formula');
+  if (!formula) return;
 
   const section = document.createElement('section');
   section.className = 'ambassador-section section-pad';
@@ -101,7 +101,7 @@ function buildSection() {
       </div>
     </div>`;
 
-  faq.insertAdjacentElement('beforebegin', section);
+  formula.insertAdjacentElement('afterend', section);
 }
 
 function wireForm() {

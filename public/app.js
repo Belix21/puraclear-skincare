@@ -1,14 +1,16 @@
-import { REGULAR_PRICE, MAX_QUANTITY, priceFor, lineKey, money, restoreCart } from './commerce.js';
+import { REGULAR_PRICE as legacyRegularPrice, MAX_QUANTITY, priceFor as legacyPriceFor, lineKey, money, restoreCart } from './commerce.js';
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
 const blueClubEdition = document.body.dataset.angle === 'frat-blue';
 const clubEdition = blueClubEdition || document.body.dataset.angle === 'frat';
+const REGULAR_PRICE = clubEdition ? legacyRegularPrice : 4800;
+const priceFor = item => clubEdition ? legacyPriceFor(item) : item.pack === 2 ? 7600 : 4800;
 const imageBase = blueClubEdition ? '/images/frat-blue' : clubEdition ? '/images/frat' : '/images';
 const clubSurface = blueClubEdition ? 'blue' : 'maroon';
 const clubTowel = blueClubEdition ? 'white' : 'cream';
-const packName = pack => clubEdition ? (pack === 2 ? 'The roommate duo' : 'The solo') : (pack === 2 ? 'The shelf duo' : 'The everyday');
-const storageKey = 'puraclear-demo-bag-v1';
+const packName = pack => clubEdition ? (pack === 2 ? 'The roommate duo' : 'The solo') : (pack === 2 ? '2-Pack Bundle' : 'Single');
+const storageKey = clubEdition ? 'puraclear-demo-bag-v1' : 'puraclear-bag-v2';
 const form = $('#product-form');
 let cart = [];
 try { cart = restoreCart(localStorage.getItem(storageKey)); } catch { /* Private browsers can block storage. */ }
@@ -18,7 +20,7 @@ function announce(message) {
   region.textContent = message;
 }
 function saveCart() {
-  try { localStorage.setItem(storageKey, JSON.stringify(cart)); } catch { announce('Your demo bag is available for this visit. Browser storage is unavailable.'); }
+  try { localStorage.setItem(storageKey, JSON.stringify(cart)); } catch { announce('Your bag is available for this visit. Browser storage is unavailable.'); }
 }
 function selection() {
   return { pack: Number(form.elements.pack.value), plan: form.elements.plan.value, cadence: Number(form.elements.cadence.value) };
@@ -26,15 +28,15 @@ function selection() {
 function updateOffer() {
   const selected = selection();
   const price = money(priceFor(selected));
-  $('#once-price').textContent = money(priceFor({ ...selected, plan: 'once' }));
-  $('#subscribe-price').textContent = money(priceFor({ ...selected, plan: 'subscribe' }));
-  $('#recurring-price').textContent = price;
+  if ($('#once-price')) $('#once-price').textContent = money(priceFor({ ...selected, plan: 'once' }));
+  if ($('#subscribe-price')) $('#subscribe-price').textContent = money(priceFor({ ...selected, plan: 'subscribe' }));
+  if ($('#recurring-price')) $('#recurring-price').textContent = price;
   $('#button-price').textContent = price;
   $('#sticky-price').textContent = price;
   $('#sticky-plan').textContent = `${selected.pack} ${selected.pack === 1 ? 'jar' : 'jars'} · ${selected.plan === 'subscribe' ? `Every ${selected.cadence} days` : 'One-time purchase'}`;
-  $('#subscription-detail').hidden = selected.plan !== 'subscribe';
-  $('#cadence').disabled = selected.plan !== 'subscribe';
-  $('#duo-savings').textContent = selected.plan === 'subscribe' ? 'save 15%' : 'save 10%';
+  if ($('#subscription-detail')) $('#subscription-detail').hidden = selected.plan !== 'subscribe';
+  if ($('#cadence')) $('#cadence').disabled = selected.plan !== 'subscribe';
+  $('#duo-savings').textContent = clubEdition ? (selected.plan === 'subscribe' ? 'save 15%' : 'save 10%') : 'BEST VALUE · SAVE 21%';
 }
 
 function openDialog(id) {
@@ -75,7 +77,7 @@ function renderCart() {
   if (!cart.length) {
     const empty = element('div', undefined, 'empty-cart');
     const photo = element('img'); photo.src = `${imageBase}/hero-thumb.webp`; photo.alt = '';
-    empty.append(photo, element('h3', clubEdition ? 'No face gear. Yet.' : 'A little space for you.'), element('p', clubEdition ? 'Big plans start with a little maintenance.' : 'Find your everyday. Add PuraClear to your demo bag.'));
+    empty.append(photo, element('h3', clubEdition ? 'No face gear. Yet.' : 'A little space for you.'), element('p', clubEdition ? 'Big plans start with a little maintenance.' : 'Find your everyday. Add PuraClear to your bag.'));
     container.append(empty);
     return;
   }
@@ -103,7 +105,7 @@ function renderCart() {
     remove.setAttribute('aria-label', `Remove ${description}`);
     remove.addEventListener('click', () => {
       cart = cart.filter(item => lineKey(item) !== key); saveCart(); renderCart();
-      $('#bag-dialog [data-close]').focus(); announce('Item removed from your demo bag.');
+      $('#bag-dialog [data-close]').focus(); announce('Item removed from your bag.');
     });
     controls.append(quantity, remove); content.append(controls); row.append(photo, content); container.append(row);
   });
@@ -127,11 +129,11 @@ function addToBag() {
   if (selected.plan === 'once') selected.cadence = 0;
   const existing = cart.find(line => lineKey(line) === lineKey(selected));
   if (existing?.quantity === MAX_QUANTITY) {
-    openDialog('bag-dialog'); announce('This demo allows up to 10 of each selection.'); return;
+    openDialog('bag-dialog'); announce('You can add up to 10 of each selection.'); return;
   }
   if (existing) existing.quantity += 1;
   else cart.push({ ...selected, quantity: 1 });
-  saveCart(); openDialog('bag-dialog'); announce(`${packName(selected.pack)} added to your demo bag.`);
+  saveCart(); openDialog('bag-dialog'); announce(`${packName(selected.pack)} added to your bag.`);
 }
 form.addEventListener('change', updateOffer);
 form.addEventListener('submit', event => { event.preventDefault(); addToBag(); });
@@ -148,8 +150,8 @@ $('#preview-order').addEventListener('click', () => {
   announce('Preview only. No order has been placed and no subscription has started.');
 });
 $('#clear-bag').addEventListener('click', () => {
-  cart = []; saveCart(); renderCart(); announce('Your demo bag has been cleared.');
-  $('#clear-bag').textContent = 'Demo bag cleared';
+  cart = []; saveCart(); renderCart(); announce('Your bag has been cleared.');
+  $('#clear-bag').textContent = 'Bag cleared';
 });
 window.addEventListener('storage', event => {
   if (event.key === storageKey || event.key === null) { cart = restoreCart(event.key === null ? null : event.newValue); renderCart(); }

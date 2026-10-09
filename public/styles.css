@@ -238,3 +238,8 @@ dialog[open] { animation: settle .25s ease-out; }
   .header .nav-right { margin-left: auto; }
   .menu-trigger { display: block; position: absolute; left: 8px; }
 }
+
+.main-store .packs { grid-template-columns: 1fr; margin-bottom: 20px; }
+.main-store .pack > span:not(.radio-mark) { min-width: 0; }
+.main-store .pack strong, .main-store .pack small { white-space: normal; }
+.main-store #preview-order:disabled { opacity: .65; cursor: not-allowed; }
