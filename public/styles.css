@@ -249,3 +249,16 @@ dialog[open] { animation: settle .25s ease-out; }
 .product-approval { flex: 0 0 auto; margin: 0; }
 .product-approval img { width: 56px; height: 56px; object-fit: contain; }
 @media(max-width: 800px) { .product-approval img { width: 40px; height: 40px; } }
+
+/* Main storefront offer and footer details. */
+.main-store .pack-original-price { margin-left: 6px; font-weight: 400; opacity: .6; text-decoration: line-through; text-decoration-style: solid; text-decoration-thickness: 1px; white-space: nowrap; }
+.main-store .footer-top { grid-template-columns: 1.6fr 1fr 1fr auto; }
+.main-store .footer-socials { display: flex; align-items: center; gap: 6px; }
+.main-store .footer-socials a { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #71869b; border-radius: 4px; }
+.main-store .footer-socials svg { width: 21px; height: 21px; }
+.main-store .footer-socials .social-filled { fill: currentColor; stroke: none; }
+.main-store .back-top { width: auto; min-height: 44px; padding: 0 12px; border-radius: 4px; font-size: 11px; white-space: nowrap; }
+@media(max-width: 800px) {
+  .main-store .footer-top { grid-template-columns: 1fr 1fr; }
+  .main-store .footer-top .back-top { position: static; justify-self: start; grid-column: 1 / -1; }
+}
