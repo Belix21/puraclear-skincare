@@ -95,7 +95,7 @@ function buildSection() {
             <label for="ambassador-community">How do you connect with your community?</label>
             <textarea id="ambassador-community" name="community_connection" required></textarea>
           </div>
-          <button class="button primary ambassador-submit" type="submit"><span>Submit Application</span><span aria-hidden="true">↗</span></button>
+          <button class="button primary ambassador-submit" type="submit"><span>Submit Application</span></button>
           <p class="ambassador-status" id="ambassador-status" role="status" aria-live="polite"></p>
         </form>
       </div>

@@ -243,3 +243,9 @@ dialog[open] { animation: settle .25s ease-out; }
 .main-store .pack > span:not(.radio-mark) { min-width: 0; }
 .main-store .pack strong, .main-store .pack small { white-space: normal; }
 .main-store #preview-order:disabled { opacity: .65; cursor: not-allowed; }
+
+.product-benefits-row { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 16px; margin: 20px 0 23px; }
+.product-benefits-row .product-benefits { flex: 1 1 250px; margin: 0; }
+.product-approval { flex: 0 0 auto; margin: 0; }
+.product-approval img { width: 56px; height: 56px; object-fit: contain; }
+@media(max-width: 800px) { .product-approval img { width: 40px; height: 40px; } }
