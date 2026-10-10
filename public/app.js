@@ -13,6 +13,7 @@ const packName = pack => clubEdition ? (pack === 2 ? 'The roommate duo' : 'The s
 const storageKey = clubEdition ? 'puraclear-demo-bag-v1' : 'puraclear-bag-v2';
 const form = $('#product-form');
 let checkoutBusy = false;
+let checkoutController;
 let cart = [];
 try { cart = restoreCart(localStorage.getItem(storageKey)); } catch { /* Private browsers can block storage. */ }
 
@@ -51,6 +52,7 @@ $$('[data-open]').forEach(button => button.addEventListener('click', () => openD
 $$('[data-close]').forEach(button => button.addEventListener('click', () => button.closest('dialog').close()));
 $$('dialog').forEach(dialog => {
   dialog.addEventListener('close', () => {
+    if (dialog.id === 'bag-dialog') checkoutController?.abort();
     if (!$('dialog[open]')) document.body.classList.remove('modal-open');
   });
   dialog.addEventListener('click', event => {
@@ -114,6 +116,9 @@ function renderCart() {
   const subtotal = cart.reduce((total, line) => total + priceFor(line) * line.quantity, 0);
   const regular = cart.reduce((total, line) => total + REGULAR_PRICE * line.pack * line.quantity, 0);
   $('#cart-subtotal').textContent = money(subtotal);
+  if (!clubEdition) $('#cart-shipping-benefit').textContent = subtotal >= 7000
+    ? 'Your bag qualifies for free standard U.S. shipping.'
+    : `Add ${money(7000 - subtotal)} more for free standard U.S. shipping.`;
   $('#cart-saved').textContent = regular > subtotal ? `You save ${money(regular - subtotal)} compared with regular one-time pricing.` : '';
 }
 function changeQuantity(key, delta, label) {
@@ -153,33 +158,54 @@ $('#preview-order').addEventListener('click', async () => {
     const button = $('#preview-order');
     const status = $('#checkout-status');
     const snapshot = JSON.stringify(cart);
+    const controller = new AbortController();
+    checkoutController = controller;
+    let navigating = false;
     button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
     button.textContent = 'Checking your bag…';
-    status.textContent = '';
+    status.textContent = 'Confirming price and availability…';
     try {
       const response = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ lines: cart }), signal: AbortSignal.timeout(35000)
+        body: JSON.stringify({ lines: cart }), signal: AbortSignal.any([controller.signal, AbortSignal.timeout(35000)])
       });
       const result = await response.json();
+      if (controller.signal.aborted) return;
       if (!response.ok) throw new Error(result.error || 'Checkout could not load. Please try again.');
       if (JSON.stringify(cart) !== snapshot) throw new Error('Your bag changed. Please review it and select checkout again.');
       const target = new URL(result.checkoutUrl);
       if (target.protocol !== 'https:' || !['j0xqxk-xi.myshopify.com', 'checkout.shoppuraclear.com'].includes(target.hostname)) throw new Error('Checkout address could not be verified.');
       status.textContent = 'Opening secure Shopify checkout…';
+      button.textContent = 'Opening secure checkout…';
       window.location.assign(target.href);
+      navigating = true;
     } catch (error) {
+      if (controller.signal.aborted) { status.textContent = ''; return; }
       status.textContent = error.name === 'TimeoutError' ? 'Checkout took too long. Please try again; your bag has been saved.' : error instanceof TypeError ? 'Could not connect to checkout. Please try again; your bag has been saved.' : error.message;
     } finally {
-      checkoutBusy = false;
-      button.disabled = false;
-      button.textContent = 'Continue to secure checkout';
+      checkoutController = undefined;
+      if (!navigating) {
+        checkoutBusy = false;
+        button.disabled = false;
+        button.removeAttribute('aria-busy');
+        button.textContent = 'Continue to secure checkout';
+      }
     }
     return;
   }
   $('#order-preview').hidden = false;
   $('#order-preview').scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
   announce('Preview only. No order has been placed and no subscription has started.');
+});
+window.addEventListener('pageshow', event => {
+  if (!event.persisted || clubEdition) return;
+  checkoutBusy = false;
+  const button = $('#preview-order');
+  button.disabled = false;
+  button.removeAttribute('aria-busy');
+  button.textContent = 'Continue to secure checkout';
+  renderCart();
 });
 $('#clear-bag').addEventListener('click', () => {
   cart = []; saveCart(); renderCart(); announce('Your bag has been cleared.');
