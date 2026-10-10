@@ -1,0 +1,14 @@
+query PuraClearVariants($ids: [ID!]!) {
+  nodes(ids: $ids) { ... on ProductVariant {
+    id availableForSale price { amount currencyCode }
+  } }
+}
+mutation PuraClearCheckout($input: CartInput!) {
+  cartCreate(input: $input) {
+    cart { checkoutUrl totalQuantity cost { subtotalAmount { amount currencyCode } }
+      lines(first: 10) { nodes { quantity merchandise { ... on ProductVariant { id } } } }
+    }
+    userErrors { field message code }
+    warnings { code message }
+  }
+}

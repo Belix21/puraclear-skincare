@@ -262,3 +262,10 @@ dialog[open] { animation: settle .25s ease-out; }
   .main-store .footer-top { grid-template-columns: 1fr 1fr; }
   .main-store .footer-top .back-top { position: static; justify-self: start; grid-column: 1 / -1; }
 }
+.shipping-note { text-align: center; font-size: 12px; margin: 10px 0 4px; }
+.shipping-region-note { text-align: center; font-size: 11px; line-height: 1.5; margin: 0; color: #56687a; }
+.contact-form { display: grid; gap: 16px; margin: 24px 0; }
+.contact-form label { display: grid; gap: 7px; font-size: 13px; }
+.contact-form input, .contact-form textarea { width: 100%; padding: 12px; border: 1px solid #9baabd; border-radius: 4px; font: inherit; font-size: 16px; background: white; color: #18314c; }
+.contact-form textarea { resize: vertical; }
+#checkout-status, #contact-status { font-size: 13px; line-height: 1.5; }

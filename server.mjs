@@ -1,12 +1,17 @@
 import { createServer } from 'node:http';
+import checkout from './api/checkout.js';
 import { readFile, stat } from 'node:fs/promises';
 import { resolve, extname, sep } from 'node:path';
+import { loadEnvFile } from 'node:process';
+
+try { loadEnvFile('.env.local'); } catch (error) { if (error.code !== 'ENOENT') throw error; }
 
 const root = resolve('public');
 const mime = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.webp': 'image/webp', '.png': 'image/png', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.txt': 'text/plain' };
 createServer(async (req, res) => {
   try {
     const pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
+    if (pathname === '/api/checkout') return await checkout(req, res);
     const pages = { '/': '/index.html', '/products/puraclear-acne-moisturizer': '/index.html', '/frat': '/frat/index.html', '/frat/': '/frat/index.html', '/frat-blue': '/frat-blue/index.html', '/frat-blue/': '/frat-blue/index.html' };
     const file = resolve(root, '.' + (pages[pathname] || pathname));
     if (!file.startsWith(root + sep) || !(await stat(file)).isFile()) throw new Error('Not found');

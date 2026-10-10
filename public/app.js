@@ -12,6 +12,7 @@ const clubTowel = blueClubEdition ? 'white' : 'cream';
 const packName = pack => clubEdition ? (pack === 2 ? 'The roommate duo' : 'The solo') : (pack === 2 ? '2-Pack Bundle' : 'Single');
 const storageKey = clubEdition ? 'puraclear-demo-bag-v1' : 'puraclear-bag-v2';
 const form = $('#product-form');
+let checkoutBusy = false;
 let cart = [];
 try { cart = restoreCart(localStorage.getItem(storageKey)); } catch { /* Private browsers can block storage. */ }
 
@@ -67,6 +68,7 @@ function element(tag, text, className) {
   return node;
 }
 function renderCart() {
+  if (!clubEdition && !checkoutBusy) $('#checkout-status').textContent = '';
   const container = $('#cart-items');
   container.replaceChildren();
   $('#order-preview').hidden = true;
@@ -87,7 +89,7 @@ function renderCart() {
     const photo = element('img'); photo.src = `${imageBase}/${line.pack === 2 ? 'duo' : 'hero'}-thumb.webp`; photo.alt = `${line.pack} PuraClear ${line.pack === 1 ? 'jar' : 'jars'}`;
     const content = element('div');
     content.append(element('h3', packName(line.pack)));
-    content.append(element('p', `${line.pack} ${line.pack === 1 ? 'jar' : 'jars'} · 118 mL each`));
+    content.append(element('p', `${line.pack} ${line.pack === 1 ? 'jar' : 'jars'} · ${clubEdition ? '118 mL' : '4 oz'} each`));
     content.append(element('p', line.plan === 'subscribe' ? `Subscription · Every ${line.cadence} days` : 'One-time purchase'));
     content.append(element('p', `${money(priceFor(line) * line.quantity)}${line.plan === 'subscribe' ? ' per delivery' : ''}`, 'line-price'));
     const controls = element('div', undefined, 'cart-line-controls');
@@ -144,7 +146,37 @@ $$('[data-subscribe]').forEach(link => link.addEventListener('click', () => {
 $$('[data-duo]').forEach(link => link.addEventListener('click', () => {
   form.elements.pack.value = '2'; form.elements.plan.value = 'once'; updateOffer();
 }));
-$('#preview-order').addEventListener('click', () => {
+$('#preview-order').addEventListener('click', async () => {
+  if (!clubEdition) {
+    if (checkoutBusy || !cart.length) return;
+    checkoutBusy = true;
+    const button = $('#preview-order');
+    const status = $('#checkout-status');
+    const snapshot = JSON.stringify(cart);
+    button.disabled = true;
+    button.textContent = 'Checking your bag…';
+    status.textContent = '';
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lines: cart }), signal: AbortSignal.timeout(35000)
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Checkout could not load. Please try again.');
+      if (JSON.stringify(cart) !== snapshot) throw new Error('Your bag changed. Please review it and select checkout again.');
+      const target = new URL(result.checkoutUrl);
+      if (target.protocol !== 'https:' || !['j0xqxk-xi.myshopify.com', 'checkout.shoppuraclear.com'].includes(target.hostname)) throw new Error('Checkout address could not be verified.');
+      status.textContent = 'Opening secure Shopify checkout…';
+      window.location.assign(target.href);
+    } catch (error) {
+      status.textContent = error.name === 'TimeoutError' ? 'Checkout took too long. Please try again; your bag has been saved.' : error instanceof TypeError ? 'Could not connect to checkout. Please try again; your bag has been saved.' : error.message;
+    } finally {
+      checkoutBusy = false;
+      button.disabled = false;
+      button.textContent = 'Continue to secure checkout';
+    }
+    return;
+  }
   $('#order-preview').hidden = false;
   $('#order-preview').scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
   announce('Preview only. No order has been placed and no subscription has started.');
