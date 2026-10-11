@@ -76,7 +76,8 @@ function renderCart() {
   $('#order-preview').hidden = true;
   const count = cart.reduce((total, line) => total + line.pack * line.quantity, 0);
   $$('.bag-count').forEach(node => { node.textContent = `(${count})`; });
-  $('.bag-trigger').setAttribute('aria-label', `Open bag, ${count} ${count === 1 ? 'item' : 'items'}`);
+  $('.bag-trigger').setAttribute('aria-label', `Open bag, ${count} ${count === 1 ? 'jar' : 'jars'}`);
+  if (!clubEdition) $$('.bag-count').forEach(node => { node.textContent = `(${count} ${count === 1 ? 'jar' : 'jars'})`; });
   $('#cart-summary').hidden = cart.length === 0;
   if (!cart.length) {
     const empty = element('div', undefined, 'empty-cart');

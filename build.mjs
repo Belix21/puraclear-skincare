@@ -3,12 +3,17 @@ import { join } from 'node:path';
 
 await mkdir('dist', { recursive: true });
 await cp('public', 'dist', { recursive: true });
+const production = process.env.VERCEL_ENV === 'production';
+await writeFile('dist/robots.txt', production
+  ? 'User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: https://www.shoppuraclear.com/sitemap.xml\n'
+  : 'User-agent: *\nDisallow: /\n');
 async function preparePages(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const path = join(directory, entry.name);
     if (entry.isDirectory()) await preparePages(path);
     else if (entry.name.endsWith('.html')) {
-      const html = await readFile(path, 'utf8');
+      let html = await readFile(path, 'utf8');
+      if (production && path === join('dist', 'index.html')) html = html.replace('content="noindex, nofollow"', 'content="index, follow"');
       await writeFile(path, html.replace('<!-- production-noscript -->', '<noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=2355104858564681&amp;ev=PageView&amp;noscript=1"></noscript>'));
     }
   }

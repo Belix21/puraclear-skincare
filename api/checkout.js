@@ -95,12 +95,20 @@ export default async function handler(req, res) {
     if (body === undefined) {
       let raw = '';
       for await (const chunk of req) { raw += chunk; if (raw.length > 4096) throw new CheckoutError('Request too large', 413); }
-      body = JSON.parse(raw);
-    } else if (typeof body === 'string') body = JSON.parse(body);
+      body = parseBody(raw);
+    } else if (typeof body === 'string') body = parseBody(body);
+    else if (Buffer.byteLength(JSON.stringify(body) || '') > 4096) throw new CheckoutError('Request too large', 413);
     const buyerIp = process.env.VERCEL ? req.headers['x-vercel-forwarded-for']?.split(',')[0]?.trim() : undefined;
     res.end(JSON.stringify(await createCheckout(body?.lines, { buyerIp })));
   } catch (error) {
-    res.statusCode = error.status || 502;
+    res.statusCode = error.status || (error.name === 'TimeoutError' ? 504 : 502);
+    if (res.statusCode >= 500) res.setHeader('Retry-After', '5');
     res.end(JSON.stringify({ error: error instanceof CheckoutError ? error.message : 'Checkout could not load. Please try again. Your bag has been saved.' }));
   }
+}
+
+function parseBody(raw) {
+  if (Buffer.byteLength(raw) > 4096) throw new CheckoutError('Request too large', 413);
+  try { return JSON.parse(raw); }
+  catch { throw new CheckoutError('Please send a valid checkout request.', 400); }
 }

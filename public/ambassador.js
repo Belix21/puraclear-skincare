@@ -114,6 +114,7 @@ function wireForm() {
     if (!form.reportValidity()) return;
 
     const button = form.querySelector('button[type="submit"]');
+    if (button.disabled) return;
     const original = button.innerHTML;
     button.disabled = true;
     button.innerHTML = '<span>Submitting...</span>';
@@ -126,15 +127,17 @@ function wireForm() {
       const response = await fetch('https://formsubmit.co/ajax/puraclear@gmail.com', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
+        signal: AbortSignal.timeout(15000)
       });
-      if (!response.ok) throw new Error('Submission failed');
+      const result = await response.json();
+      if (!response.ok || ![true, 'true'].includes(result.success)) throw new Error('Submission failed');
       form.reset();
       status.className = 'ambassador-status success';
       status.textContent = 'Thanks for reaching out. The PuraClear team will review your application.';
     } catch {
       status.className = 'ambassador-status error';
-      status.textContent = 'Something went wrong. Please try again in a moment.';
+      status.textContent = 'Your application could not be sent. Your answers are still here. Please try again or email puraclear@gmail.com.';
     } finally {
       button.disabled = false;
       button.innerHTML = original;

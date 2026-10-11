@@ -3,19 +3,20 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": null,
+  "redirects": [
+    { "source": "/frat/:path*", "destination": "/", "permanent": true },
+    { "source": "/frat-blue/:path*", "destination": "/", "permanent": true }
+  ],
   "rewrites": [
-    { "source": "/products/puraclear-acne-moisturizer", "destination": "/index.html" },
-    { "source": "/frat", "destination": "/frat/index.html" },
-    { "source": "/frat/", "destination": "/frat/index.html" },
-    { "source": "/frat-blue", "destination": "/frat-blue/index.html" },
-    { "source": "/frat-blue/", "destination": "/frat-blue/index.html" }
+    { "source": "/products/puraclear-acne-moisturizer", "destination": "/index.html" }
   ],
   "headers": [
     { "source": "/(.*)", "headers": [
-      { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
       { "key": "X-Content-Type-Options", "value": "nosniff" },
       { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
       { "key": "X-Frame-Options", "value": "DENY" }
-    ] }
+    ] },
+    { "source": "/(.*)", "missing": [{ "type": "host", "value": "(www\\.)?shoppuraclear\\.com" }], "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] },
+    { "source": "/api/:path*", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] }
   ]
 }
