@@ -101,6 +101,10 @@ export default async function handler(req, res) {
     const buyerIp = process.env.VERCEL ? req.headers['x-vercel-forwarded-for']?.split(',')[0]?.trim() : undefined;
     res.end(JSON.stringify(await createCheckout(body?.lines, { buyerIp })));
   } catch (error) {
+    if (error instanceof SyntaxError || error.statusCode === 400) {
+      res.statusCode = 400;
+      return res.end(JSON.stringify({ error: 'Please send a valid checkout request.' }));
+    }
     res.statusCode = error.status || (error.name === 'TimeoutError' ? 504 : 502);
     if (res.statusCode >= 500) res.setHeader('Retry-After', '5');
     res.end(JSON.stringify({ error: error instanceof CheckoutError ? error.message : 'Checkout could not load. Please try again. Your bag has been saved.' }));

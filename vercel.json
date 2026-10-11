@@ -4,6 +4,8 @@
   "outputDirectory": "dist",
   "framework": null,
   "redirects": [
+    { "source": "/frat/", "destination": "/", "permanent": true },
+    { "source": "/frat-blue/", "destination": "/", "permanent": true },
     { "source": "/frat/:path*", "destination": "/", "permanent": true },
     { "source": "/frat-blue/:path*", "destination": "/", "permanent": true }
   ],

@@ -7,6 +7,11 @@ async function run({body,method='POST',origin='https://www.shoppuraclear.com',co
   await handler(req,res);return res;
 }
 test('malformed JSON returns a client error, not an upstream error',async()=>assert.equal((await run({body:'{'})).statusCode,400));
+test('platform JSON parser errors become safe client errors',async()=>{
+  const req={method:'POST',headers:{host:'www.shoppuraclear.com','content-type':'application/json'},get body(){throw Object.assign(new Error('Invalid JSON'),{statusCode:400});}};
+  const res={setHeader(){},end(value){this.body=JSON.parse(value)}};
+  await handler(req,res);assert.equal(res.statusCode,400);assert.match(res.body.error,/valid checkout/);
+});
 test('parsed and string oversized bodies are both rejected',async()=>{
   const body={extra:'x'.repeat(5000)};
   for(const value of [body,JSON.stringify(body)]) assert.equal((await run({body:value})).statusCode,413);
